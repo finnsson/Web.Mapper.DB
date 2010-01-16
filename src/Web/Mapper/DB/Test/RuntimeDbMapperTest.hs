@@ -17,6 +17,7 @@ import qualified Control.Exception as E
 import TestGenerator
 import Web.Mapper.DB.RuntimeDbMapper
 import Web.Mapper.Mapper
+import Web.Mapper.DB.Meta
 
 import Utilities.Misc
 
@@ -94,6 +95,34 @@ testMethodSql =
   do let actual = methodSql name valueParams
          expected = "exec foo valA valB"
      expected @=? actual
+
+-- Meta
+testMetaRoot =
+  do actual <- getMapperOutput runtimeDbMapper dataInput
+     let expected = MapperOutputMeta $ metaInfo -- [] []
+     expected @=? actual
+  where
+     runtimeDbMapper = RuntimeDbMapper cs ["public"] []
+     dataInput = DataInput Read True "xml" "" "" [] []
+
+testDbInfoRoot =
+  do actual <- dbInfo cs
+     let expected = metaInfo
+     expected @=? actual
+
+metaInfo =
+  MetaInfo [
+    TableInfo "int_int" "public" 
+      [ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")] 
+      [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)],
+    TableInfo "oid_array" "public" 
+      [ColumnInfo "array" (PrimInfo "_int4" "pg_catalog"),ColumnInfo "id" (PrimInfo "oid" "pg_catalog")] 
+      [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)],
+    TableInfo "bool_int_int" "public" 
+      [ColumnInfo "oid" (PrimInfo "oid" "pg_catalog"),ColumnInfo "fst" (PrimInfo "bit" "pg_catalog"),ColumnInfo "snd" (TableInfo "int_int" "public" [ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")] [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)])] 
+      [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)]
+    ]
+    []
 
 -- Test Helpers
 

@@ -5,8 +5,8 @@ build-type: Simple
 license: BSD4
 license-file: ""
 copyright:
-maintainer:
-build-depends:
+maintainer: Oscar Finnsson
+build-depends: base -any
 stability:
 homepage: http://github.com/finnsson/Web.Mapper.DB
 package-url:
@@ -20,7 +20,7 @@ data-files:
 data-dir: ""
 extra-source-files:
 extra-tmp-files:
-exposed-modules: Web.Mapper.Db
+exposed-modules: Web.Mapper.DB
 exposed: True
 buildable: True
 build-tools:

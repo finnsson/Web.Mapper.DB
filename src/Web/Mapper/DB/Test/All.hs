@@ -22,6 +22,8 @@ import Web.Mapper.DB.Test.DbSimpleTest (dbSimpleTest)
 import Web.Mapper.DB.Test.DbPrivilegeTest (dbPrivilegeTest)
 import Web.Mapper.DB.Test.RuntimeDbMapperTest (runtimeDbMapperTest)
 
+import Web.Mapper.DB
+
 main = defaultMain groupsOfTests
 
 -- replace the following line with TH that finds all *Test.hs in location-dir

@@ -43,26 +43,6 @@ type ArgPosition = Integer
 
 type ColName = String
 
--- data DbInfo = DbInfo [TypeInfo] [ProcInfo]
---  deriving (Show,Eq)
-
---data ProcInfo = ProcInfo {
---                  procInfoReturnType::TypeInfo,
---                  procInfoName::String,
---                  procInfoNS::String,
---                  procInfoArguments::[(String,TypeInfo)],
---                  procInfoComment::Maybe String
---                }
---  deriving (Show,Eq)
---
---data TypeInfo =
---     TableInfo TypeName TypeNS [ColumnInfo] [(PrivilegeType, Bool)] 
---     | PrimInfo TypeName TypeNS
--- deriving (Show,Eq)
---
---data PrivilegeType = InsertPrivilege | UpdatePrivilege | SelectPrivilege | DeletePrivilege
---  deriving (Show,Eq)
-
 typeName :: TypeInfo -> TypeName
 typeName (TableInfo tn _ _ _) = tn
 typeName (PrimInfo tn _) = tn
@@ -73,9 +53,6 @@ typeNs (PrimInfo _ tns) = tns
 
 tableInfoPrivilege (TableInfo _ _ _ p) = p
 tableInfoPrivilege (PrimInfo _ _) = []
-
--- data ColumnInfo = ColumnInfo String TypeInfo
---    deriving (Show,Eq)
 
 data Table = Table { tableDbType::DbType, tableDbColumns::[DbColumn] }
    deriving (Show,Eq)
@@ -232,10 +209,13 @@ findTypeInfo ti tn nsn =
 
 
 -- All primary types in the PostgreSQL database.
-primInfos = [stringPrimInfo,boolPrimInfo,int4PrimInfo]
+primInfos = [stringPrimInfo,boolPrimInfo,int4PrimInfo, _int4PrimInfo, oidPrimInfo, bitPrimInfo]
 stringPrimInfo = PrimInfo "String" "pg_catalog"
 boolPrimInfo = PrimInfo "bool" "pg_catalog"
 int4PrimInfo = PrimInfo "int4" "pg_catalog"
+_int4PrimInfo = PrimInfo "_int4" "pg_catalog"
+oidPrimInfo = PrimInfo "oid" "pg_catalog"
+bitPrimInfo = PrimInfo "bit" "pg_catalog"
 
 -- Export this function
 dbInfo :: String -> IO MetaInfo
@@ -243,5 +223,8 @@ dbInfo connectionString =
    do conn <- connectPostgreSQL connectionString --"dbname=mydb user=foo password=bar"
       tableInfo <- pgType conn -- >>* groupTableInfo
       procInfo <- pgProc tableInfo conn
-      return $ MetaInfo tableInfo procInfo
-   
+      let tableInfo' = map fromJust $ filter isJust $ map isTableInfo tableInfo
+      return $ MetaInfo tableInfo' procInfo
+   where
+    isTableInfo (PrimInfo _ _) = Nothing
+    isTableInfo t = Just t

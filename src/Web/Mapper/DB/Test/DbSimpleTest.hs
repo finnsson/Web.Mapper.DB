@@ -55,7 +55,7 @@ test_resolveTableGraph = ([],[]) @=? resolveTableGraph [] []
 
 test_dbInfoLength =
   do actual <- dbInfo connectionString 
-     4 @=? ( length $ typeInfo actual )
+     1 @=? ( length $ typeInfo actual )
      1 @=? ( length $ procInfo actual )
 
 test_sql2String = "Hej" @=? sql2String (SqlString "Hej")
@@ -94,7 +94,6 @@ test_pgFunctions =
      let expected = DbFunction (dbFunctionId actual) "boolean_to_integer" "public" "int4" "pg_catalog" (Just "My super comment.")
      expected @=? actual
 
--- getProcInfos :: [TypeInfo] -> [DbArgument] -> [DbFunction] -> [ProcInfo]
 test_getProcInfos =  1 @=? (length $ getProcInfos primTypeInfoFixture dbArgumentFixture dbFunctionFixture )
 
 
@@ -104,12 +103,9 @@ test_pgType =
   do conn <- connectPostgreSQL connectionString
      types <- pgType conn
      1 @=? (length types - length primInfos)
-     boolBoolTableInfoFixture @=? (types !! 3)
-     stringPrimInfoFixture @=? (types !! 0)
-     boolPrimInfoFixture @=? (types !! 1)
-     int4PrimInfo @=? (types !! 2)
+     boolBoolTableInfoFixture @=? (last types)
 
 test_dbInfo =
   do actual <- dbInfo connectionString
-     let expected = MetaInfo [stringPrimInfoFixture, boolPrimInfoFixture, int4PrimInfo, boolBoolTableInfoFixture] [procInfoFixture]
+     let expected = MetaInfo [boolBoolTableInfoFixture] [procInfoFixture]
      expected @=? actual

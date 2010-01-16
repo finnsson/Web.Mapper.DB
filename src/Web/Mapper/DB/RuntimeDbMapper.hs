@@ -13,6 +13,7 @@
 -----------------------------------------------------------------------------
 
 module Web.Mapper.DB.RuntimeDbMapper (
+  RuntimeDbMapper (..),
   RuntimeViewMapper (..),
   select',
   insert',
