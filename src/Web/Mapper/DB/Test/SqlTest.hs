@@ -11,6 +11,7 @@ import Data.Char
 import Database.HDBC
 import Database.HDBC.PostgreSQL
 
+import Web.Mapper.Mapper
 import Web.Mapper.DB.Meta
 import Web.Mapper.DB.Sql
 
@@ -30,8 +31,8 @@ dbArgumentFixture = [DbArgument "foo" 0 "bool" "pg_catalog" "boolean_to_integer"
 dbFunctionFixture = [DbFunction 100 "boolean_to_integer" "public" "Integer" "pg_catalog" (Just "My super comment.")]
 
 -- Helpers
-typeInfo (DbInfo t _ ) = t
-procInfo (DbInfo _ p ) = p
+typeInfo (MetaInfo t _ ) = t
+procInfo (MetaInfo _ p ) = p
 
 connectionString = "dbname=SqlTest user=test password=test"
 

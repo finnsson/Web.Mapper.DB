@@ -1,2 +1,1 @@
-
-module Web.Mapper.DB where
+module Web.Mapper.DB (RuntimeDbMapper)  where

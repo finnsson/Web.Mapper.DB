@@ -11,6 +11,7 @@ import Data.Char
 import Database.HDBC
 import Database.HDBC.PostgreSQL
 
+import Web.Mapper.Mapper
 import Web.Mapper.DB.Meta
 import Web.Mapper.DB.Sql
 
@@ -47,8 +48,8 @@ procInfoFixture =
 
 
 -- Helpers
-typeInfo (DbInfo t _ ) = t
-procInfo (DbInfo _ p ) = p
+typeInfo (MetaInfo t _ ) = t
+procInfo (MetaInfo _ p ) = p
 
 test_resolveTableGraph = ([],[]) @=? resolveTableGraph [] []
 
@@ -110,5 +111,5 @@ test_pgType =
 
 test_dbInfo =
   do actual <- dbInfo connectionString
-     let expected = DbInfo [stringPrimInfoFixture, boolPrimInfoFixture, int4PrimInfo, boolBoolTableInfoFixture] [procInfoFixture]
+     let expected = MetaInfo [stringPrimInfoFixture, boolPrimInfoFixture, int4PrimInfo, boolBoolTableInfoFixture] [procInfoFixture]
      expected @=? actual

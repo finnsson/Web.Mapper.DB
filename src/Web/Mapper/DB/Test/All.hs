@@ -18,7 +18,7 @@ import Web.Mapper.DB.Sql
 
 import Web.Mapper.DB.Test.SqlTest (sqlTest)
 import Web.Mapper.DB.Test.DbSimpleTest (dbSimpleTest)
-import Web.Mapper.DB.Test.SerializerTest (serializerTest)
+-- import Web.Mapper.DB.Test.SerializerTest (serializerTest)
 import Web.Mapper.DB.Test.DbPrivilegeTest (dbPrivilegeTest)
 import Web.Mapper.DB.Test.RuntimeDbMapperTest (runtimeDbMapperTest)
 
@@ -26,4 +26,4 @@ main = defaultMain groupsOfTests
 
 -- replace the following line with TH that finds all *Test.hs in location-dir
 -- and returns a list of all groupsOfTests in these source-files.
-groupsOfTests = [sqlTest, dbSimpleTest , serializerTest , dbPrivilegeTest, runtimeDbMapperTest]
+groupsOfTests = [sqlTest, dbSimpleTest , dbPrivilegeTest, runtimeDbMapperTest]

@@ -22,6 +22,8 @@ import Utilities.Misc
 
 import Web.Mapper.DB.Sql
 
+import Web.Mapper.Mapper
+
 -- DATA TYPES
 
 
@@ -41,25 +43,25 @@ type ArgPosition = Integer
 
 type ColName = String
 
-data DbInfo = DbInfo [TypeInfo] [ProcInfo]
-  deriving (Show,Eq)
+-- data DbInfo = DbInfo [TypeInfo] [ProcInfo]
+--  deriving (Show,Eq)
 
-data ProcInfo = ProcInfo {
-                  procInfoReturnType::TypeInfo,
-                  procInfoName::String,
-                  procInfoNS::String,
-                  procInfoArguments::[(String,TypeInfo)],
-                  procInfoComment::Maybe String
-                }
-  deriving (Show,Eq)
-
-data TypeInfo =
-     TableInfo TypeName TypeNS [ColumnInfo] [(PrivilegeType, Bool)] 
-     | PrimInfo TypeName TypeNS
- deriving (Show,Eq)
-
-data PrivilegeType = InsertPrivilege | UpdatePrivilege | SelectPrivilege | DeletePrivilege
-  deriving (Show,Eq)
+--data ProcInfo = ProcInfo {
+--                  procInfoReturnType::TypeInfo,
+--                  procInfoName::String,
+--                  procInfoNS::String,
+--                  procInfoArguments::[(String,TypeInfo)],
+--                  procInfoComment::Maybe String
+--                }
+--  deriving (Show,Eq)
+--
+--data TypeInfo =
+--     TableInfo TypeName TypeNS [ColumnInfo] [(PrivilegeType, Bool)] 
+--     | PrimInfo TypeName TypeNS
+-- deriving (Show,Eq)
+--
+--data PrivilegeType = InsertPrivilege | UpdatePrivilege | SelectPrivilege | DeletePrivilege
+--  deriving (Show,Eq)
 
 typeName :: TypeInfo -> TypeName
 typeName (TableInfo tn _ _ _) = tn
@@ -72,8 +74,8 @@ typeNs (PrimInfo _ tns) = tns
 tableInfoPrivilege (TableInfo _ _ _ p) = p
 tableInfoPrivilege (PrimInfo _ _) = []
 
-data ColumnInfo = ColumnInfo String TypeInfo
-   deriving (Show,Eq)
+-- data ColumnInfo = ColumnInfo String TypeInfo
+--    deriving (Show,Eq)
 
 data Table = Table { tableDbType::DbType, tableDbColumns::[DbColumn] }
    deriving (Show,Eq)
@@ -116,7 +118,7 @@ pickerMaybe row col =
   where safePick SqlNull = Nothing
         safePick cell = Just $ sql2String cell
 
-pgProc :: [TypeInfo] -> Connection -> IO [ProcInfo]
+pgProc :: [TypeInfo] -> Connection -> IO [FuncInfo]
 pgProc ti c = 
   do functions <- pgCall sqlFunctions sql2DbFunction c -- . getProcInfo
      arguments <- pgCall sqlArguments sql2DbArgument c -- . get
@@ -209,7 +211,7 @@ resolveTableGraph ta ti = (snd part,ti++ti')
                 table2tableInfo r =  TableInfo (dbTypeTypeName dbt) (dbTypeTypeNS dbt) (columnInfos r) (dbTypePrivilege dbt) -- insert priv-info here
                   where dbt = tableDbType r 
 
-getProcInfos :: [TypeInfo] -> [DbArgument] -> [DbFunction] -> [ProcInfo]
+getProcInfos :: [TypeInfo] -> [DbArgument] -> [DbFunction] -> [FuncInfo]
 getProcInfos typeInfos dbArgs dbFunctions = map getProcInfo' dbFunctions
    where
       getProcInfo' dbFunc =
@@ -236,10 +238,10 @@ boolPrimInfo = PrimInfo "bool" "pg_catalog"
 int4PrimInfo = PrimInfo "int4" "pg_catalog"
 
 -- Export this function
-dbInfo :: String -> IO DbInfo
+dbInfo :: String -> IO MetaInfo
 dbInfo connectionString =
    do conn <- connectPostgreSQL connectionString --"dbname=mydb user=foo password=bar"
       tableInfo <- pgType conn -- >>* groupTableInfo
       procInfo <- pgProc tableInfo conn
-      return $ DbInfo tableInfo procInfo
+      return $ MetaInfo tableInfo procInfo
    

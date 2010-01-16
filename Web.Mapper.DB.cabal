@@ -1,4 +1,4 @@
-name: Web.Mapper.DB
+name: Web-Mapper-DB
 version: 0.1.0
 cabal-version: -any
 build-type: Simple
@@ -20,7 +20,7 @@ data-files:
 data-dir: ""
 extra-source-files:
 extra-tmp-files:
-exposed-modules:
+exposed-modules: Web.Mapper.Db
 exposed: True
 buildable: True
 build-tools:

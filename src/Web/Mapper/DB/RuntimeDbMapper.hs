@@ -28,6 +28,7 @@ module Web.Mapper.DB.RuntimeDbMapper (
 ) where
 
 import Web.Mapper.Mapper
+import Web.Mapper.DB.Meta
 import Utilities.Misc
 import Utilities.HDBC
 
@@ -42,6 +43,25 @@ import List
 import Control.Monad
 import Maybe
 import Data.Generics
+
+data RuntimeDbMapper =
+  RuntimeDbMapper {
+    runtimeDbMapperConnectionString :: String,
+    runtimeDbMapperViewNSs :: [String],
+    runtimeDbMapperFunctionNSs :: [String]
+  }
+  deriving (Eq, Show)
+
+instance MapperOutputter RuntimeDbMapper where
+  getMapperOutput (RuntimeDbMapper cs vs fs) dataInput  =
+    if (dataInputMeta dataInput)
+    then dbInfo cs >>= (return . MapperOutputMeta)
+    else if elem ns vs
+    then getViewMap cs dataInput
+    else if elem ns fs
+    then getFunctionMap cs dataInput
+    else return $ MapperOutputError $ "No view- och function-namespace correspons to " ++ ns
+    where ns = dataInputNS dataInput
 
 data RuntimeViewMapper =
   RuntimeViewMapper {
@@ -62,7 +82,7 @@ instance MapperOutputter RuntimeViewMapper where
   getMapperOutput (RuntimeViewMapper cs) = getViewMap cs
 
 getFunctionMap :: String -> DataInput -> IO MapperOutput
-getFunctionMap cs input = error "Not implemented"
+getFunctionMap = method'
 
 getViewMap :: String -> DataInput -> IO MapperOutput
 getViewMap cs input =

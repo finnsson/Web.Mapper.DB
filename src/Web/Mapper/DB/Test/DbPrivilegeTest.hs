@@ -13,6 +13,7 @@ import Database.HDBC.PostgreSQL
 
 import Web.Mapper.DB.Meta
 import Web.Mapper.DB.Sql
+import Web.Mapper.Mapper
 import TestGenerator
 
 import Language.Haskell.TH
