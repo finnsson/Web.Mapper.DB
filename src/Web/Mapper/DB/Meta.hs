@@ -146,10 +146,10 @@ sql2DbType r =
        typeName = pick 1
        typeNS = pick 2
        comment = pick 3
-       select = if pickb 4 then [(SelectPrivilege,False)] else []
-       update = if pickb 5 then [(UpdatePrivilege,False)] else []
-       insert = if pickb 6 then [(InsertPrivilege,False)] else []
-       delete = if pickb 7 then [(DeletePrivilege,False)] else []
+       select = if pickb 4 then [(SelectPrivilege,True)] else []
+       update = if pickb 5 then [(UpdatePrivilege,True)] else []
+       insert = if pickb 6 then [(InsertPrivilege,True)] else []
+       delete = if pickb 7 then [(DeletePrivilege,True)] else []
    in DbType id typeName typeNS comment $ select ++ update ++ insert ++ delete
 
 sql2DbColumn :: [SqlValue] -> DbColumn

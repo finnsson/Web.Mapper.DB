@@ -13,15 +13,15 @@ main = Handler.run 3011 app
 app :: Hack.Env -> IO Hack.Response
 app env = do
     dbOutput <- getMapperOutput runtimeDbMapper dataInput 
-    -- getViewMap "dbname=RuntimeDbMapperTest user=test password=test" dataInput
     return $ Hack.Response
         200
         [("Content-Type", "text/plain; charset=utf-8")]
         $ BSLU.fromString $ instruction ++ "\n\r\n\r" ++ (show dataInput) ++ "\n\r\n\r"
-          ++ (serializeToXml $ dbOutput) ++ "\n\n\n" ++ (show env)
+          ++ (serializer $ dbOutput) ++ "\n\n\n" ++ (show env)
     where
       dataInput = getDataInput $ R.envParser config env
       runtimeDbMapper = RuntimeDbMapper "dbname=RuntimeDbMapperTest user=test password=test" ["public"] []
+      serializer = if (dataInputFormat dataInput == "xml") then serializeToXml else serializeToJson
 
 config = R.EnvParser ["public"] ["func"] "_"
 

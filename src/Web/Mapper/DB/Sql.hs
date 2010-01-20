@@ -33,7 +33,7 @@ sqlColumns = " \
 sqlTypes = " \
  \     select t.oid as ID, t.typname as TypeName, n.nspname as TypeNS, d.description as Comment, \
  \     has_table_privilege(current_user, c.oid, 'SELECT') as SelectPrivilege, \
- \     has_table_privilege(current_user, c.oid, 'UPDATE') as UodatePrivilege, \
+ \     has_table_privilege(current_user, c.oid, 'UPDATE') as UpdatePrivilege, \
  \     has_table_privilege(current_user, c.oid, 'INSERT') as InsertPrivilege, \
  \     has_table_privilege(current_user, c.oid, 'DELETE') as DeletePrivilege \
  \     from pg_type t   \
