@@ -31,7 +31,7 @@ testOscarCanOnlySelect =
      types <- pgType conn
      let test_select = find (\t -> typeName t == "test_select") types
          actual = maybe [] tableInfoPrivilege test_select
-         expected = [(SelectPrivilege,False)]
+         expected = [(SelectPrivilege,True)]
      expected @=? actual
 
 testOscarCanOnlyInsert =
@@ -39,7 +39,7 @@ testOscarCanOnlyInsert =
      types <- pgType conn
      let test_select = find (\t -> typeName t == "test_insert") types
          actual = maybe [] tableInfoPrivilege test_select
-         expected = [(InsertPrivilege,False)]
+         expected = [(InsertPrivilege,True)]
      expected @=? actual
 
 testOscarCanOnlyUpdate =
@@ -47,7 +47,7 @@ testOscarCanOnlyUpdate =
      types <- pgType conn
      let test_select = find (\t -> typeName t == "test_update") types
          actual = maybe [] tableInfoPrivilege test_select
-         expected = [(UpdatePrivilege,False)]
+         expected = [(UpdatePrivilege,True)]
      expected @=? actual
 
 testOscarCanOnlyDelete =
@@ -55,7 +55,7 @@ testOscarCanOnlyDelete =
      types <- pgType conn
      let test_select = find (\t -> typeName t == "test_delete") types
          actual = maybe [] tableInfoPrivilege test_select
-         expected = [(DeletePrivilege,False)]
+         expected = [(DeletePrivilege,True)]
      expected @=? actual
 
 

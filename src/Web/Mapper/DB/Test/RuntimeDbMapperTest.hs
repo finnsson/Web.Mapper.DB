@@ -114,13 +114,13 @@ metaInfo =
   MetaInfo [
     TableInfo "int_int" "public" 
       [ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")] 
-      [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)],
+      [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)],
     TableInfo "oid_array" "public" 
       [ColumnInfo "array" (PrimInfo "_int4" "pg_catalog"),ColumnInfo "id" (PrimInfo "oid" "pg_catalog")] 
-      [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)],
+      [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)],
     TableInfo "bool_int_int" "public" 
-      [ColumnInfo "oid" (PrimInfo "oid" "pg_catalog"),ColumnInfo "fst" (PrimInfo "bit" "pg_catalog"),ColumnInfo "snd" (TableInfo "int_int" "public" [ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")] [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)])] 
-      [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)]
+      [ColumnInfo "oid" (PrimInfo "oid" "pg_catalog"),ColumnInfo "fst" (PrimInfo "bit" "pg_catalog"),ColumnInfo "snd" (TableInfo "int_int" "public" [ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")] [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)])] 
+      [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)]
     ]
     []
 

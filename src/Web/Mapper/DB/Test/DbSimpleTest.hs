@@ -35,7 +35,7 @@ dbFunctionFixture = [DbFunction 100 "boolean_to_integer" "public" "Integer" "pg_
 boolBoolTableInfoFixture =
   TableInfo "bool_bool" "public" [ColumnInfo "fst" boolPrimInfoFixture, ColumnInfo "snd" boolPrimInfoFixture] allPrivileges
 
-allPrivileges = [(SelectPrivilege,False),(UpdatePrivilege,False),(InsertPrivilege,False),(DeletePrivilege,False)]
+allPrivileges = [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)]
 
 procInfoFixture =
           ProcInfo {

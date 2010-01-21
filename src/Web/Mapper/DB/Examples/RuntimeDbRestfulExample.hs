@@ -16,8 +16,8 @@ app env = do
     return $ Hack.Response
         200
         [("Content-Type", "text/plain; charset=utf-8")]
-        $ BSLU.fromString $ instruction ++ "\n\r\n\r" ++ (show dataInput) ++ "\n\r\n\r"
-          ++ (serializer $ dbOutput) ++ "\n\n\n" ++ (show env)
+        $ BSLU.fromString $ (serializer $ dbOutput) -- instruction ++ "\n\r\n\r" ++ (show dataInput) ++ "\n\r\n\r"
+        --  ++  ++ "\n\n\n" ++ (show env)
     where
       dataInput = getDataInput $ R.envParser config env
       runtimeDbMapper = RuntimeDbMapper "dbname=RuntimeDbMapperTest user=test password=test" ["public"] []
