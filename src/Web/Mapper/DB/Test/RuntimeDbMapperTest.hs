@@ -68,8 +68,40 @@ testFilter =
 
 testInsertSql =
   do let actual = insertSql name valueParams
-         expected = "insert into foo(argA,argB) values(valA,valB)"
+         expected = "insert into foo(argA,argB) values(?,?)"
      expected @=? actual
+
+-- Master Test
+
+testInsertUpdateDeleteSql =
+  do let di = (DataInput Delete False "xml" "public" "test_test" [] [])
+     -- clean table
+     rowsCleaned <- delete' cs di { dataInputVerb = Delete }
+     -- verify table is cleaned
+     rowsAfterClean <- select' cs di { dataInputVerb = Read }
+     (MapperOutput [] ) @=? rowsAfterClean
+
+     -- insert row
+     rowInserted <- insert' cs di { 
+       dataInputVerb = Create, 
+       dataInputValue = [("fst","1"),("snd","3")] }
+     -- verify row is inserted
+     selectAfterInsert <- select' cs di { dataInputVerb = Read }
+     (MapperOutput [[("fst","1"),("snd","3")]]) @=? selectAfterInsert
+     -- update row
+     rowUpdated <- update' cs di { 
+       dataInputVerb = Update,
+       dataInputValue = [("fst","2")],
+       dataInputFilter = [("snd","3")]}
+     -- verify row is updated
+     rowsAfterUpdate <- select' cs di { dataInputVerb = Read }
+     (MapperOutput [[("fst","2"),("snd","3")]]) @=? rowsAfterUpdate
+
+     -- delete row
+     rowsDeleted <- delete' cs di { dataInputVerb = Delete }
+     -- verify row is deleted
+     rowsAfterFinalDelete <- select' cs di { dataInputVerb = Read }
+     (MapperOutput [] ) @=? rowsAfterFinalDelete
 
 -- Update
 
@@ -118,8 +150,20 @@ metaInfo =
     TableInfo "oid_array" "public" 
       [ColumnInfo "array" (PrimInfo "_int4" "pg_catalog"),ColumnInfo "id" (PrimInfo "oid" "pg_catalog")] 
       [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)],
+    TableInfo "test_test" "public" 
+      [ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")] 
+      [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)],
     TableInfo "bool_int_int" "public" 
-      [ColumnInfo "oid" (PrimInfo "oid" "pg_catalog"),ColumnInfo "fst" (PrimInfo "bit" "pg_catalog"),ColumnInfo "snd" (TableInfo "int_int" "public" [ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")] [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)])] 
+      [
+      ColumnInfo "oid" (PrimInfo "oid" "pg_catalog"),
+      ColumnInfo "fst" (PrimInfo "bit" "pg_catalog"),
+      ColumnInfo "snd" (TableInfo "int_int" "public"
+        [
+        ColumnInfo "fst" (PrimInfo "int4" "pg_catalog"),
+        ColumnInfo "snd" (PrimInfo "int4" "pg_catalog")
+        ] 
+        [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)])
+      ] 
       [(SelectPrivilege,True),(UpdatePrivilege,True),(InsertPrivilege,True),(DeletePrivilege,True)]
     ]
     []

@@ -117,9 +117,10 @@ delete' = query' (\n w v -> deleteSql n w)
 query' :: (String -> KVs -> KVs -> String) -> String -> DataInput -> IO MapperOutput
 query' sql cs callData =
      if all isNothing errors
-     then do connection <- connectPostgreSQL cs 
-             queryResult <- quickQueryALsafe connection (sql name paramsWhere paramsValue) 
-                (map (SqlString . snd) (paramsWhere ++ paramsValue))
+     then do connection <- connectPostgreSQL cs
+             putStrLn $ "sql: " ++ (sql name paramsWhere paramsValue) 
+             queryResult <- quickQueryALsafe connection (sql name paramsWhere paramsValue) -- []
+               (map (SqlString . snd) ( paramsValue ++ paramsWhere))
              let convertQR :: [(String,SqlValue)] -> [(String,String)]
                  convertQR = map (\r -> (fst r, sqlValue2String $ snd r))
              return $ MapperOutput $ map convertQR queryResult
@@ -135,7 +136,7 @@ query' sql cs callData =
                     ++ "." 
                     ++ surround ( dataInputName callData)
 
-quickQueryALsafe conn sql sqlParams = catchSql (quickQueryAL conn sql sqlParams) (\e -> return [[("error", SqlString "sql error")]])
+quickQueryALsafe conn sql sqlParams = catchSql (withTransaction conn $ (\c -> quickQueryAL c sql sqlParams)) (\e -> putStrLn (show e) >> return [[("error", SqlString "sql error")]])
 
 method' :: String -> DataInput -> IO MapperOutput
 method' = query' (\n w v -> methodSql n v)
@@ -150,8 +151,9 @@ selectSql name whereParams =
 insertSql :: String -> KVs -> String
 insertSql name params =
   "insert into " ++ name ++ "(" ++   foldr1With "," ( map fst params) ++ ")"
-    ++ " values(" ++ foldr1With "," ( map snd params ) ++ ")"
-
+    ++ " values(" ++ foldr1With "," ( replicate (length params) "?" ) ++ ")"
+-- map snd params
+--
 updateSql :: String -> KVs -> KVs -> String
 updateSql name whereParams valueParams =
   sqlBase ++ setSql ++ whereSql whereParams
