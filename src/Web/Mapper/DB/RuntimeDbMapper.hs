@@ -14,7 +14,7 @@
 
 module Web.Mapper.DB.RuntimeDbMapper (
   RuntimeDbMapper (..),
-  RuntimeViewMapper (..),
+--  RuntimeViewMapper (..),
   select',
   insert',
   update',
@@ -53,6 +53,7 @@ data RuntimeDbMapper =
   }
   deriving (Eq, Show)
 
+
 instance MapperOutputter RuntimeDbMapper where
   getMapperOutput (RuntimeDbMapper cs vs fs) dataInput  =
     if (dataInputMeta dataInput)
@@ -64,23 +65,23 @@ instance MapperOutputter RuntimeDbMapper where
     else return $ MapperOutputError $ "No view- och function-namespace correspons to " ++ ns
     where ns = dataInputNS dataInput
 
-data RuntimeViewMapper =
-  RuntimeViewMapper {
-    runtimeViewMapperConnectionString :: String
-  }
-  deriving (Eq, Show)
+-- data RuntimeViewMapper =
+--  RuntimeViewMapper {
+--    runtimeViewMapperConnectionString :: String
+--  }
+--  deriving (Eq, Show)
 
-data RuntimeFunctionMapper =
-  RuntimeFunctionMapper {
-    runtimeFunctionMapperConnectionString :: String
-  }
-  deriving (Eq, Show)
+-- data RuntimeFunctionMapper =
+--   RuntimeFunctionMapper {
+--     runtimeFunctionMapperConnectionString :: String
+--   }
+--   deriving (Eq, Show)
 
-instance MapperOutputter RuntimeFunctionMapper where
-  getMapperOutput (RuntimeFunctionMapper cs) = getFunctionMap cs
+-- instance MapperOutputter RuntimeFunctionMapper where
+--  getMapperOutput (RuntimeFunctionMapper cs) = getFunctionMap cs
 
-instance MapperOutputter RuntimeViewMapper where
-  getMapperOutput (RuntimeViewMapper cs) = getViewMap cs
+-- instance MapperOutputter RuntimeViewMapper where
+--  getMapperOutput (RuntimeViewMapper cs) = getViewMap cs
 
 getFunctionMap :: String -> DataInput -> IO MapperOutput
 getFunctionMap = method'
